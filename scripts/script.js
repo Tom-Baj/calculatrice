@@ -4,11 +4,11 @@ let digits = document.querySelectorAll(".digits");
 let operators = document.querySelectorAll(".operators");
 let clean = document.querySelector(".delete");
 let equal = document.querySelector(".equal");
+let zero = document.getElementById("0");
+let decimal = document.getElementById(".");
 
 /* Effacer display */
 clean.addEventListener("click", displayClean);
-
-let displayTotal = "";
 
 let result = [];
 
@@ -17,54 +17,62 @@ function displayClean() {
   display.innerText = 0;
 }
 
-/* Définir le click sur l'élément */
-function numberValue() {
+/* Gestion des chiffres et des opérateurs */
+function calculate() {
   digits.forEach((digit) => {
     digit.addEventListener("click", (event) => {
       if (display.innerText === "0") {
         display.innerText = "";
       }
       let displayNumber = event.target.innerText;
-
+      result.push(displayNumber);
       display.innerText += displayNumber;
-
-      displayTotal += displayNumber;
     });
   });
-}
 
-/* Récupère le click sur l'opérateur */
-function operatorValue() {
-  let clickedOperator = null; // Variable pour stocker l'opérateur cliqué
-
+  // Gérer les clics sur les opérateurs
   operators.forEach((operator) => {
     operator.addEventListener("click", (event) => {
       let displayOperator = event.target.innerText;
-
-      // Enregistre l'opérateur cliqué
-      clickedOperator = displayOperator;
-
-      // Mise à jour de l'affichage
       if (display.innerText !== "0") {
-        display.innerText += displayOperator;
+        if (
+          result[result.length - 1] !== "+" &&
+          result[result.length - 1] !== "-" &&
+          result[result.length - 1] !== "*" &&
+          result[result.length - 1] !== "/"
+        ) {
+          result.push(displayOperator);
+          display.innerText += displayOperator;
+        }
       }
-      displayTotal += displayOperator;
-
-      // Retourner la valeur de l'opérateur cliqué
-      console.log("Opérateur cliqué : " + clickedOperator);
     });
   });
 
-  return clickedOperator; // Ce retour ne fonctionnera pas comme tu l'attends à cause de l'asynchronisme
+  zero.addEventListener("click", () => {
+    if (result[result.length - 1] === "/") {
+      display.innerText = "Erreur";
+      result = [];
+    } else {
+      display.innerText += "0";
+      result.push("0");
+    }
+  });
+
+  decimal.addEventListener("click", () => {
+    if (!display.innerText.includes(".")) {
+      display.innerText += ".";
+      result.push(".");
+    }
+  });
 }
 
 function total() {
   equal.addEventListener("click", () => {
-    console.log(display.innerText);
+    let equalValue = eval(display.innerText);
+    display.innerText = equalValue;
   });
 }
 
 /* Mise à jour du display */
-numberValue();
-operatorValue();
+calculate();
 total();
