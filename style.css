@@ -104,7 +104,8 @@ h1 {
   height: 100%;
 }
 
-#digit-0 {
+#digit-0,
+#delete {
   grid-column: span 2;
 }
 

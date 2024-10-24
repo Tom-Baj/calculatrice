@@ -3,18 +3,17 @@ let display = document.querySelector(".display");
 let digits = document.querySelectorAll(".digits");
 let operators = document.querySelectorAll(".operators");
 let clean = document.querySelector(".delete");
-let equal = document.querySelector(".equal");
-let zero = document.getElementById("0");
-let decimal = document.getElementById(".");
-
-/* Effacer display */
-clean.addEventListener("click", displayClean);
+let equal = document.getElementById("equal");
+let zero = document.getElementById("digit-0");
+let decimal = document.getElementById("digit-.");
+let correction = document.getElementById("correction");
 
 let result = [];
 
 /* Initialiser display */
 function displayClean() {
   display.innerText = 0;
+  result = [];
 }
 
 /* Gestion des chiffres et des opérateurs */
@@ -34,7 +33,7 @@ function calculate() {
   operators.forEach((operator) => {
     operator.addEventListener("click", (event) => {
       let displayOperator = event.target.innerText;
-      if (display.innerText !== "0") {
+      if (display.innerText !== "") {
         if (
           result[result.length - 1] !== "+" &&
           result[result.length - 1] !== "-" &&
@@ -53,7 +52,6 @@ function calculate() {
       display.innerText = "Erreur";
       result = [];
     } else {
-      display.innerText += "0";
       result.push("0");
     }
   });
@@ -66,6 +64,7 @@ function calculate() {
   });
 }
 
+/* Calculer le total */
 function total() {
   equal.addEventListener("click", () => {
     let equalValue = eval(display.innerText);
@@ -73,6 +72,22 @@ function total() {
   });
 }
 
+function deleteLast() {
+  correction.addEventListener("click", () => {
+    if (display.innerText !== "0") {
+      result.pop();
+      display.innerText = result.join("");
+      if (result.length !== 1) {
+        display.innerText = "0";
+      }
+    }
+  });
+}
+
+/* Effacer display */
+clean.addEventListener("click", displayClean);
+
 /* Mise à jour du display */
 calculate();
+deleteLast();
 total();
